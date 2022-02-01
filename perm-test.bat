@@ -17,6 +17,8 @@ SET MACHINE_DEFINITION_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENT
 SET NETWORK_SETTINGS_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/networksettings/%NETWORK_SETTINGS_NAME%
 SET PROJECT_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/projects/%PROJECT_NAME%
 SET DEVELOPER_EMAIL=chrkin@fidalgoppe010.onmicrosoft.com
+SET DEVELOPER_PASSWORD=****
+SET VM_NAME=myVm
 
 az extension remove -n fidalgo 
 az extension add --source %homepath%\downloads\fidalgo-0.1.0-py3-none-any.whl -y 
@@ -33,7 +35,6 @@ az fidalgo admin dev-center create ^
 az fidalgo admin dev-center list --output table 
 az fidalgo admin dev-center show --dev-center %DEV_CENTER_NAME% 
  
-az group create -l EastUS2 -n %DEV_CENTER_RG% 
 az fidalgo admin project create ^
     -n %PROJECT_NAME% ^
     --dev-center-id %DEV_CENTER_ID% ^
@@ -41,7 +42,7 @@ az fidalgo admin project create ^
 az fidalgo admin project list -g %DEV_CENTER_RG%
 az fidalgo admin project delete -g %DEV_CENTER_RG% -n %PROJECT_NAME%
 
-az group create -l EastUS2 -n %CPC_RG% 
+az group create -l %LOCATION% -n %CPC_RG% 
 az fidalgo admin network-setting create ^
     --name %NETWORK_SETTINGS_NAME% ^
     --domain-name "%DOMAIN_NAME%" ^
@@ -61,7 +62,6 @@ az fidalgo admin machine-definition create ^
     --name %MACHINE_DEFINITION_NAME% ^
     --image-reference publisher=MicrosoftWindowsDesktop offer=windows-ent-cpc sku=19h2-ent-cpc-os-g2
 az fidalgo admin machine-definition list
-az fidalgo admin machine-definition delete --name %MACHINE_DEFINITION_NAME% -g %DEV_CENTER_RG%
 
 REM az fidalgo admin sku list 
 az fidalgo admin pool create ^
@@ -75,11 +75,56 @@ az fidalgo admin pool create ^
 az fidalgo admin pool list --project-name %PROJECT_NAME%
 
 az role assignment create ^
-    --assignee "{UPN ex:%DEVELOPER_EMAIL%}" ^
+    --subscription %SUBSCRIPTION% ^
+    --assignee "%DEVELOPER_EMAIL%" ^
     --role "Contributor" ^
     --scope %PROJECT_ID% 
+az role assignment list ^
+    --subscription %SUBSCRIPTION% ^
+    --assignee "%DEVELOPER_EMAIL%" ^
+    --scope %PROJECT_ID% 
+
+az login
+
+az fidalgo dev project list ^
+    --dev-center %DEV_CENTER_NAME%
+
+az fidalgo dev pool list ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME%
+
+az fidalgo dev virtual-machine create ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    --pool-name %POOL_NAME% ^
+    -n %VM_NAME%
+
+az fidalgo dev virtual-machine show ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    -n %VM_NAME%
+
+az fidalgo dev virtual-machine stop ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    -n %VM_NAME%
+
+az fidalgo dev virtual-machine start ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    -n %VM_NAME%
+ 
+az fidalgo dev virtual-machine get-rdp-file-content ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    -n %VM_NAME%
 
 REM 
 az fidalgo admin dev-center delete -g %DEV_CENTER_RG% -n %DEV_CENTER_NAME%
 az fidalgo admin project delete -g %DEV_CENTER_RG% --project %PROJECT_NAME%
 az fidalgo admin machine-definition delete --resource-group %DEV_CENTER_RG% --name %MACHINE_DEFINITION_NAME%
+
+az fidalgo dev virtual-machine delete ^
+    --dev-center %DEV_CENTER_NAME% ^
+    --project-name %PROJECT_NAME% ^
+    -n %VM_NAME%
