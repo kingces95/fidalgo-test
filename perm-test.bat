@@ -1,21 +1,27 @@
 SET TENANT=8ab2df1c-ed88-4946-a8a9-e1bbb3e4d1fd
 SET SUBSCRIPTION=5107c0cd-1b38-45e5-ad53-5308aeafd97a
+
 SET LOCATION=EastUS2
 SET DEV_CENTER_NAME=myDevCenter3
 SET DEV_CENTER_RG=myDevCenterRg
-SET PROJECT_NAME=myProject
 SET DEV_CENTER_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/devcenters/%DEV_CENTER_NAME%
+
 SET NETWORK_SETTINGS_NAME=myNetworkSetting
+SET NETWORK_SETTINGS_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/networksettings/%NETWORK_SETTINGS_NAME%
 SET DOMAIN_NAME=fidalgoppe010.local
 SET DOMAIN_USER_NAME=domainjoin
 SET DOMAIN_PASSWORD=****
 SET CPC_RG=/subscriptions/5107c0cd-1b38-45e5-ad53-5308aeafd97a/resourceGroups/myCpcRg
 SET SUBNET_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/permtest/providers/Microsoft.Network/virtualNetworks/vNetPermTest/subnets/default
+
 SET MACHINE_DEFINITION_NAME=myMachineDefinition
-SET POOL_NAME=myPoolName
 SET MACHINE_DEFINITION_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/machinedefinitions/%MACHINE_DEFINITION_NAME%
-SET NETWORK_SETTINGS_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/networksettings/%NETWORK_SETTINGS_NAME%
+
+SET POOL_NAME=myPoolName
+
 SET PROJECT_ID=/subscriptions/%SUBSCRIPTION%/resourceGroups/%DEV_CENTER_RG%/providers/Microsoft.Fidalgo/projects/%PROJECT_NAME%
+SET PROJECT_NAME=myProject
+
 SET DEVELOPER_EMAIL=chrkin@fidalgoppe010.onmicrosoft.com
 SET DEVELOPER_PASSWORD=****
 SET VM_NAME=myVm
